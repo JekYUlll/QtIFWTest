@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>QtIFW Pack Test</Name>
+    <Version>1.0.0</Version> <!-- 安装器自身版本，不影响组件版本 -->
+    <Title>QtIFW 测试安装器</Title>
+    <Publisher>Example Vendor</Publisher>
+    <StartMenuDir>QtIFWTest</StartMenuDir>
+    <!--    在线安装-->
+    <TargetDir>@HomeDir@/QtIFWTest/online</TargetDir>
+    <RemoteRepositories>
+        <Repository>
+            <Url>http://localhost:8090/repo</Url>
+            <Enabled>true</Enabled>
+            <DisplayName>测试仓库</DisplayName>
+        </Repository>
+    </RemoteRepositories>
+</Installer>
