@@ -10,7 +10,12 @@ import (
 
 func main() {
 
-// 	err := GenerateSHA1For7zFiles("./static")
+// 	err := GenerateSHA1ForFiles("./static")
+// 	if err != nil {
+// 		log.Fatalf("生成 SHA1 校验和时出错: %v", err)
+// 	}
+//
+// 	err = GenerateMD5ForFiles("./static")
 // 	if err != nil {
 // 		log.Fatalf("生成 SHA1 校验和时出错: %v", err)
 // 	}

@@ -37,6 +37,26 @@
             <DisplayName>本地测试仓库(Mint)</DisplayName>
         </Repository>
         <Repository>
+            <Url>http://localhost:8090/repo/repo-1.0.0/</Url>
+            <Enabled>true</Enabled>
+            <DisplayName>本地测试仓库(Mint)-1.0.0</DisplayName>
+        </Repository>
+        <Repository>
+            <Url>http://localhost:8090/repo/repo-1.1.0/</Url>
+            <Enabled>true</Enabled>
+            <DisplayName>本地测试仓库(Mint)-1.1.0</DisplayName>
+        </Repository>
+        <Repository>
+            <Url>http://localhost:8090/repo/repo-1.2.0/</Url>
+            <Enabled>true</Enabled>
+            <DisplayName>本地测试仓库(Mint)-1.2.0</DisplayName>
+        </Repository>
+        <Repository>
+            <Url>http://localhost:8090/repo/repo-1.3.0/</Url>
+            <Enabled>true</Enabled>
+            <DisplayName>本地测试仓库(Mint)-1.3.0</DisplayName>
+        </Repository>
+        <Repository>
             <Url>http://172.16.20.15:8090/repo/</Url>
             <Enabled>true</Enabled>
             <DisplayName>局域网测试仓库(DELL)</DisplayName>

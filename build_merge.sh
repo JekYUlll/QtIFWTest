@@ -54,3 +54,34 @@ done
 
 echo "✅ Done. Structure is:"
 tree "$REPO_DIR"
+
+#server/static
+#├── 2025-04-23-0934_meta.7z
+#├── com.vendor.root.component1
+#│   ├── 1.0.0content.7z
+#│   ├── 1.0.0content.7z.sha1
+#│   ├── 1.0.0meta.7z
+#│   ├── 1.1.0content.7z
+#│   ├── 1.1.0content.7z.sha1
+#│   ├── 1.1.0meta.7z
+#│   ├── 1.2.0content.7z
+#│   ├── 1.2.0content.7z.sha1
+#│   ├── 1.2.0meta.7z
+#│   ├── 1.3.0content.7z
+#│   ├── 1.3.0content.7z.sha1
+#│   └── 1.3.0meta.7z
+#├── com.vendor.root.component1.subcomponent1
+#│   ├── 1.0.0content.7z
+#│   ├── 1.0.0content.7z.sha1
+#│   ├── 1.0.0meta.7z
+#│   ├── 1.1.0content.7z
+#│   ├── 1.1.0content.7z.sha1
+#│   ├── 1.1.0meta.7z
+#│   ├── 1.2.0content.7z
+#│   ├── 1.2.0content.7z.sha1
+#│   ├── 1.2.0meta.7z
+#│   ├── 1.3.0content.7z
+#│   ├── 1.3.0content.7z.sha1
+#│   └── 1.3.0meta.7z
+#└── Updates.xml
+

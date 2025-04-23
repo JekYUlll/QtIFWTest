@@ -29,7 +29,6 @@ add_executable(app1 component1/main.cpp)
 target_include_directories(app1 PRIVATE subcomponent1)
 target_link_libraries(app1 PRIVATE helper)
 target_compile_definitions(app1 PRIVATE APP_VERSION="${APP_VERSION}")
-
 set_target_properties(app1 PROPERTIES
         INSTALL_RPATH "$ORIGIN"
 )
