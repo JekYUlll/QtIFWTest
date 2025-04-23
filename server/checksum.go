@@ -13,7 +13,7 @@ import (
 )
 
 // GenerateSHA1For7zFiles 遍历指定目录，为 content.7z 文件生成 .sha1，忽略 -meta.7z 文件
-func GenerateSHA1For7zFiles(root string) error {
+func GenerateSHA1ForFiles(root string) error {
 	return filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err

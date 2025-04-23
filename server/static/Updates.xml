@@ -9,9 +9,9 @@
   <Version>1.3.0</Version>
   <ReleaseDate>2025-04-23</ReleaseDate>
   <Default>true</Default>
-  <UpdateFile OS="Any" UncompressedSize="16519" CompressedSize="2566"/>
+  <UpdateFile UncompressedSize="16559" CompressedSize="2737" OS="Any"/>
   <DownloadableArchives>content.7z</DownloadableArchives>
-  <SHA1>72fb9186e32f8c8f2b9bed568a55e9610e4ee4eb</SHA1>
+  <SHA1>e4b324d47b8f84482db049fe49924be113669740</SHA1>
  </PackageUpdate>
  <PackageUpdate>
   <Name>com.vendor.root.component1.subcomponent1</Name>
@@ -20,10 +20,10 @@
   <Version>1.3.0</Version>
   <ReleaseDate>2025-04-23</ReleaseDate>
   <Default>true</Default>
-  <UpdateFile OS="Any" UncompressedSize="15975" CompressedSize="2121"/>
+  <UpdateFile UncompressedSize="15975" CompressedSize="2121" OS="Any"/>
   <DownloadableArchives>content.7z</DownloadableArchives>
-  <SHA1>20a235d332076a9c95cdabd84df97ddd82391324</SHA1>
+  <SHA1>6d6b6c40bc3a47b9a217aa7a73a3b59528b7e49e</SHA1>
  </PackageUpdate>
- <SHA1>a53c3d228db498f75a361551f0bf0e5f1bee27a1</SHA1>
- <MetadataName>2025-04-23-0836_meta.7z</MetadataName>
+ <SHA1>54bcf78804758941037d80271e06538ee6c262f2</SHA1>
+ <MetadataName>2025-04-23-0934_meta.7z</MetadataName>
 </Updates>

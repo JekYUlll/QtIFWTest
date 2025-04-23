@@ -1,17 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-    <Name>QtIFW Pack Test</Name>
+    <Name>QtIFW Pack Test - TR</Name>
     <Version>1.0.0</Version> <!-- 安装器自身版本，不影响组件版本 -->
-    <Title>QtIFW 测试安装器</Title>
-    <Publisher>Example Vendor</Publisher>
+    <Title>QtIFW 测试安装器 - Title</Title>
+    <Publisher>张祝玙</Publisher>
+
+    <ProductUrl>https://www.qq.com</ProductUrl>
+
+    <InstallerWindowIcon>images/installer.png</InstallerWindowIcon>
+    <InstallerApplicationIcon>images/installer.png</InstallerApplicationIcon>
+<!--    <Logo>images/logo.png</Logo>-->
+    <Watermark>images/watermark.png</Watermark>
+
+    <RunProgram>@TargetDir@/app1</RunProgram>
+    <RunProgramArguments>
+        <Argument>Arg1</Argument>
+        <Argument>Arg2</Argument>
+    </RunProgramArguments>
+    <RunProgramDescription>QtIFW 测试程序 - Description</RunProgramDescription>
+
     <StartMenuDir>QtIFWTest</StartMenuDir>
-    <!--    在线安装-->
-    <TargetDir>@HomeDir@/QtIFWTest/online</TargetDir>
+    <MaintenanceToolName>TestMaintenanceTool</MaintenanceToolName>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <Background>images/background.png</Background>
+
+    <TargetDir>@HomeDir@/QtIFWTest/1.0.0</TargetDir>
+    <AdminTargetDir>@RootDir@/QtIFWTest/1.0.0</AdminTargetDir>
+
+    <CreateLocalRepository>true</CreateLocalRepository>
+    <InstallActionColumnVisible>true</InstallActionColumnVisible>
+
     <RemoteRepositories>
         <Repository>
             <Url>http://localhost:8090/repo</Url>
             <Enabled>true</Enabled>
-            <DisplayName>本地测试仓库</DisplayName>
+            <DisplayName>本地测试仓库(Mint)</DisplayName>
+        </Repository>
+        <Repository>
+            <Url>http://172.16.20.15:8090/repo/</Url>
+            <Enabled>true</Enabled>
+            <DisplayName>局域网测试仓库(DELL)</DisplayName>
         </Repository>
     </RemoteRepositories>
+
+    <AliasDefinitionsFile>aliases.xml</AliasDefinitionsFile>
 </Installer>
