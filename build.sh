@@ -6,7 +6,7 @@ COMPONENTS=("com.vendor.root.component1" "com.vendor.root.component1.subcomponen
 
 SRC_DIR=$(pwd)
 BUILD_DIR="$SRC_DIR/build"
-INSTALL_DIR="$SRC_DIR/install-tmp"
+INSTALL_DIR="$SRC_DIR/tmp"
 PKG_BASE="$SRC_DIR/staging"
 REPO_BASE="$SRC_DIR/server/static"
 
@@ -14,7 +14,7 @@ REPO_BASE="$SRC_DIR/server/static"
 rm -rf "$BUILD_DIR" "$INSTALL_DIR" "$PKG_BASE" "$REPO_BASE"
 mkdir -p "$BUILD_DIR" "$INSTALL_DIR" "$PKG_BASE" "$REPO_BASE"
 
-# 生成 package.xml、license.txt 和 installscript.qs
+# 生成 package.xml、license.txt、installscript.qs 和 errorpage.ui
 gen_meta() {
   comp=$1
   ver=$2
@@ -31,27 +31,39 @@ EOF
 
   # installscript.qs
   cat > "$meta_dir/installscript.qs" <<EOF
-function Component() {
-    console.log("🔍 Constructing component: " + component.name);
+function Component()
+{
+    // Add a user interface file called ErrorPage, which should not be complete
+    installer.addWizardPage( component, "ErrorPage", QInstaller.ReadyForInstallation );
+    component.userInterface( "ErrorPage" ).complete = true;
 }
+EOF
 
-Component.prototype.install = function() {
-    var markerPath = component.installedPath + "/installscript_marker_${comp//./_}_${ver//./_}.txt";
-    console.log("📝 Writing install marker to: " + markerPath);
-
-    var file = new QFile(markerPath);
-    if (file.open(QIODevice.WriteOnly | QIODevice.Text)) {
-        var out = new QTextStream(file);
-        out.writeString("📦 Script triggered for component: ${comp} ${ver}\n");
-        out.writeString("Timestamp: " + new Date() + "\n");
-        file.close();
-    } else {
-        console.log("❌ Failed to create marker file at: " + markerPath);
-    }
-
-    console.log("✅ installscript.qs executed for: ${comp} ${ver}");
-}
-
+  # errorpage.ui
+  cat > "$meta_dir/errorpage.ui" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ErrorPage</class>
+ <widget class="QWidget" name="ErrorPage">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>这是一个测试用的errorpage</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="continueButton">
+     <property name="text">
+      <string>OK</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+</ui>
 EOF
 
   # package.xml
@@ -66,21 +78,24 @@ EOF
         <License name="License Agreement" file="license.txt"/>
     </Licenses>
     <Script>installscript.qs</Script>
+    <UserInterfaces>
+        <UserInterface>errorpage.ui</UserInterface>
+    </UserInterfaces>
 </Package>
 EOF
 }
 
-# 生成 .data 文件
+# ✅ 修复：generate_data_file 现在在 gen_meta 外部
 generate_data_file() {
-    local version=$1
+  local version=$1
 
-    cat > "${SRC_DIR}/src/component1/example.data" <<EOF
+  cat > "${SRC_DIR}/src/component1/example.data" <<EOF
 Component1 Resource File
 Version: ${version}
 Timestamp: $(date)
 EOF
 
-    cat > "${SRC_DIR}/src/subcomponent1/helper.data" <<EOF
+  cat > "${SRC_DIR}/src/subcomponent1/helper.data" <<EOF
 Subcomponent1 Resource File
 Version: ${version}
 Timestamp: $(date)

@@ -1,6 +1,6 @@
 build*/
 cmake*/
-install-tmp/
+tmp/
 staging/
 release/
 server/static

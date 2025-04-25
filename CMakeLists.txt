@@ -8,9 +8,9 @@ if(NOT DEFINED APP_VERSION)
         set(APP_VERSION "1.0.0")
 endif()
 
-# 安装前缀：install-tmp/<version>
+# 安装前缀：tmp/<version>
 if(NOT DEFINED INSTALL_PREFIX)
-        set(INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install-tmp/${APP_VERSION}")
+        set(INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/tmp/${APP_VERSION}")
 endif()
 
 message(STATUS "Building version: ${APP_VERSION}")

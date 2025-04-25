@@ -32,10 +32,13 @@
 <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> -e <packages> <installer_name>
 ```
 
-
 创建存储库则是使用 `repogen` 工具，详见 [Creating Online Installers](https://doc.qt.io/qtinstallerframework/ifw-online-installers.html)。
 
 ---
+
+![流程](images/qtifw大体.drawio.png)
+
+![流程](images/qtifw流程.drawio.png)
 
 首先从理论上过一遍：
 
@@ -176,10 +179,15 @@ staging
   <Licenses>
     <License name="License Agreement" file="license.txt"/>
   </Licenses>
+  <UserInterfaces>
+    <UserInterface>errorpage.ui</UserInterface>
+  </UserInterfaces>
   <Script>installscript.qs</Script>
 </Package>
-
 ```
+
+- 使用`errorpage.ui`来模拟一个安装时自定义界面；
+- 使用`installscript.qs`来定义界面的加载逻辑；
 
 `package.xml`的额外配置：
 ```xml
@@ -392,7 +400,7 @@ sudo nginx -s reload
             <DisplayName>本地测试仓库(Mint)-1.2.0</DisplayName>
         </Repository>
         <Repository>
-            <!--  此处8091是nginx反向代理的端口-->
+            <!--  此处8091是nginx反向代理的端口8091-->
             <Url>http://localhost:8091/repo/repo-1.3.0/</Url>
             <Enabled>true</Enabled>
             <!--   对最新仓库启用用户与密码进行测试-->
@@ -440,7 +448,7 @@ config.xml` 中的 `<RepositoryCategory>` 元素可以包含多个 `<RemoteRepos
 ```bash
 QtIFWTools/binarycreator \
   --offline-only \
-  -c installer-config/config.xml \
+  -c config/config.xml \
   -p staging/packages-1.0.0 \
   -t QtIFWTools/installerbase \
   release/offlineInstaller-1.0.0.run
@@ -584,7 +592,7 @@ $ tree                                                   □ QtIFWTest/test 17:1
 
 ```bash
 QtIFWTools/binarycreator \
-  -c installer-config/config.xml \
+  -c config/config.xml \
   -p staging/packages-1.0.0 \
   -e com.vendor.root.component1,com.vendor.root.component1.subcomponent1 \
   -t QtIFWTools/installerbase \
@@ -637,6 +645,51 @@ QtIFWTools/binarycreator \
 更新完成：
 
 ![](images/img_16.png)
+
+---
+
+### 补充：license、自定义界面
+
+自定义的ui文件：
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ErrorPage</class>
+ <widget class="QWidget" name="ErrorPage">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>这是一个测试用的errorpage</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="continueButton">
+     <property name="text">
+      <string>OK</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+</ui>
+```
+
+自定义的qs脚本：
+
+```javascript
+{
+    // Add a user interface file called ErrorPage, which should not be complete
+    installer.addWizardPage( component, "ErrorPage", QInstaller.ReadyForInstallation );
+    component.userInterface( "ErrorPage" ).complete = true;
+}
+```
+
+![license](images/img_39.png)
+
+![license](images/img_40.png)
 
 ---
 
@@ -743,4 +796,14 @@ sudo tcpdump -i lo -w localhost_ifw_nginx.pcap port 8091
 之后重新发送GET请求，携带`tr`和`123456`
 
 ![Updates.xml](images/img_35.png)
+
+// TODO
+
+qs能否加载图片？  
+具体运作流程？
+
+ini文件
+
+解压速度、效率降低
+libc串行解压速度差距
 

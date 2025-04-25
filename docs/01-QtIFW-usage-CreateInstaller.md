@@ -74,7 +74,7 @@
 例如，输入以下命令创建一个名为 `SDKInstaller.exe` 的安装程序二进制文件，其中包含 `org.qt-project.sdk` 标识的软件包及其依赖项：
 
 ```bash
-binarycreator.exe --offline-only -c installer-config -p installer-packes SDKInstaller.exe
+binarycreator.exe --offline-only -c config -p installer-packes SDKInstaller.exe
 ```
 
 ---
@@ -172,7 +172,7 @@ repogen.exe -p packages -i org.qt-project.sdk.qt,org.qt-project.sdk.qtcreator re
 `org.qt-project.qtcreator` 的数据，因为这些包是从远程存储库下载的：
 
 ```bash
-binarycreator.exe -p installer-packages -c installer-config\config.xml -e org.qt-project.sdk.qt,org.qt-project.qtcreator SDKInstaller.exe
+binarycreator.exe -p installer-packages -c config\config.xml -e org.qt-project.sdk.qt,org.qt-project.qtcreator SDKInstaller.exe
 ```
 
 > 即使组件是从 Web 服务器获取的， binarycreator 也会默认将其添加到安装程序二进制文件中。
