@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# 未维护，目录可能有误
+
 VERSIONS=("1.0.0" "1.1.0" "1.2.0" "1.3.0")
 COMPONENTS=("com.vendor.root.component1" "com.vendor.root.component1.subcomponent1")
 SRC_DIR=$(pwd)

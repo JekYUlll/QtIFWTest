@@ -71,8 +71,8 @@ go run main.go
 
 # Qt ifw 测试
 
-[component1](component1/)为可执行程序。  
-[subcomponent1](subcomponent1/)为动态库。  
+[component1](src/component1/)为可执行程序。  
+[subcomponent1](src/subcomponent1/)为动态库。  
 内置`.data`资源文件。
 
 

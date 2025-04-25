@@ -4,3 +4,4 @@ install-tmp/
 staging/
 release/
 server/static
+test/

@@ -20,13 +20,13 @@ set(COMP1 "com.vendor.root.component1")
 set(COMP2 "com.vendor.root.component1.subcomponent1")
 
 # 子组件1：共享库
-add_library(helper SHARED subcomponent1/helper.cpp)
-target_include_directories(helper PUBLIC subcomponent1)
+add_library(helper SHARED src/subcomponent1/helper.cpp)
+target_include_directories(helper PUBLIC src/subcomponent1)
 target_compile_definitions(helper PRIVATE APP_VERSION="${APP_VERSION}")
 
 # 主程序：app1
-add_executable(app1 component1/main.cpp)
-target_include_directories(app1 PRIVATE subcomponent1)
+add_executable(app1 src/component1/main.cpp)
+target_include_directories(app1 PRIVATE src/subcomponent1)
 target_link_libraries(app1 PRIVATE helper)
 target_compile_definitions(app1 PRIVATE APP_VERSION="${APP_VERSION}")
 set_target_properties(app1 PROPERTIES
@@ -36,10 +36,10 @@ set_target_properties(app1 PROPERTIES
 # 安装规则
 install(TARGETS app1
         DESTINATION "${INSTALL_PREFIX}/${COMP1}/data")
-install(FILES "${CMAKE_SOURCE_DIR}/component1/example.data"
+install(FILES "${CMAKE_SOURCE_DIR}/src/component1/example.data"
         DESTINATION "${INSTALL_PREFIX}/${COMP1}/data")
 
 install(TARGETS helper LIBRARY
         DESTINATION "${INSTALL_PREFIX}/${COMP2}/data")
-install(FILES "${CMAKE_SOURCE_DIR}/subcomponent1/helper.data"
+install(FILES "${CMAKE_SOURCE_DIR}/src/subcomponent1/helper.data"
         DESTINATION "${INSTALL_PREFIX}/${COMP2}/data")
