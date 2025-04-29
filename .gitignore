@@ -5,3 +5,8 @@ staging/
 release/
 server/static
 test/
+payload/
+docs/.obsidian
+*.docx
+*.7z
+payload.7z

@@ -36,9 +36,9 @@
 
 ---
 
-![流程](images/qtifw大体.drawio.png)
+![流程](images/qtifw_general.png)
 
-![流程](images/qtifw流程.drawio.png)
+![流程](images/qtifw_details.png)
 
 首先从理论上过一遍：
 
@@ -680,11 +680,13 @@ QtIFWTools/binarycreator \
 自定义的qs脚本：
 
 ```javascript
+function Component()
 {
-    // Add a user interface file called ErrorPage, which should not be complete
-    installer.addWizardPage( component, "ErrorPage", QInstaller.ReadyForInstallation );
-    component.userInterface( "ErrorPage" ).complete = true;
+  // Add a user interface file called ErrorPage, which should not be complete
+  installer.addWizardPage( component, "ErrorPage", QInstaller.ReadyForInstallation );
+  component.userInterface( "ErrorPage" ).complete = true;
 }
+
 ```
 
 ![license](images/img_39.png)
@@ -797,13 +799,120 @@ sudo tcpdump -i lo -w localhost_ifw_nginx.pcap port 8091
 
 ![Updates.xml](images/img_35.png)
 
-// TODO
+---
 
-qs能否加载图片？  
-具体运作流程？
+### [补充] 安装时解压性能调查
 
-ini文件
+> QtIFW解压器是内置了 LZMA 解码器，性能接近 7-Zip。
 
-解压速度、效率降低
-libc串行解压速度差距
+在安装包内增加载荷，打包一个2.7G的压缩包进去（里面包含87首.flac格式音乐作为组件，含有简单目录层级）：
+
+```txt
+$ ll                                □ com.vendor.root.component1/data⎪●◦⎥ 09:13
+drwxrwxr-x horeb horeb 4.0 KB Tue Apr 29 09:12:26 2025  ./
+drwxrwxr-x horeb horeb 4.0 KB Fri Apr 25 20:03:03 2025  ../
+.rwxr-xr-x horeb horeb  16 KB Fri Apr 25 20:03:03 2025  app1*
+.rw-r--r-- horeb horeb  94 B  Fri Apr 25 20:03:03 2025  example.data
+.rw-rw-r-- horeb horeb 2.5 GB Tue Apr 29 09:11:35 2025  payload.7z
+```
+
+打包后安装包大小从76.7MB增加至2.8GB。
+
+安装时日志：
+```txt
+正在准备安装…
+
+正在准备解压组件......
+
+正在解压组件......
+正在提取“1.0.0payload.7z”
+正在提取“1.0.0content.7z”
+正在提取“1.0.0content.7z”
+已完成
+
+正在安装组件 com.vendor.root.component1
+已完成
+
+正在安装组件 com.vendor.root.component1.subcomponent1
+已完成
+
+正在创建本地资料档案库
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1/license.txt
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1/errorpage.ui
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1/installscript.qs
+/home/horeb/QtIFWTest/1.0.0_whole/repository/config/config-internal.ini
+/home/horeb/QtIFWTest/1.0.0_whole/repository/installer-config/aliases_xml.xml
+/home/horeb/QtIFWTest/1.0.0_whole/repository/installer-config/images_background_png.png
+/home/horeb/QtIFWTest/1.0.0_whole/repository/installer-config/images_installer_png.png
+/home/horeb/QtIFWTest/1.0.0_whole/repository/installer-config/images_watermark_png.png
+/home/horeb/QtIFWTest/1.0.0_whole/repository/installer-config/config.xml
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1.subcomponent1/license.txt
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1.subcomponent1/errorpage.ui
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1.subcomponent1/installscript.qs
+/home/horeb/QtIFWTest/1.0.0_whole/repository/Updates.xml
+/home/horeb/QtIFWTest/1.0.0_whole/repository/rccprojectMlaHaP.qrc
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1/1.0.0meta.7z
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1/1.0.0payload.7z
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1/1.0.0payload.7z.sha1
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1/1.0.0content.7z
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1/1.0.0content.7z.sha1
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1.subcomponent1/1.0.0meta.7z
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1.subcomponent1/1.0.0content.7z
+/home/horeb/QtIFWTest/1.0.0_whole/repository/com.vendor.root.component1.subcomponent1/1.0.0content.7z.sha1
+编写维护工具。
+
+安装已完成!
+```
+
+手动解压性能测试：
+```txt
+◎ START=$(date +%s)                 □ com.vendor.root.component1/data⎪●◦⎥ 09:13
+7z x payload.7z -o./manual_extract/
+END=$(date +%s)
+echo "Manual extraction took $((END-START)) seconds"
+
+
+7-Zip 23.01 (x64) : Copyright (c) 1999-2023 Igor Pavlov : 2023-06-20
+ 64-bit locale=zh_CN.UTF-8 Threads:16 OPEN_MAX:2048
+
+Scanning the drive for archives:
+1 file, 2701388945 bytes (2577 MiB)
+
+Extracting archive: payload.7z
+--
+Path = payload.7z
+Type = 7z
+Physical Size = 2701388945
+Headers Size = 2325
+Method = LZMA2:25
+Solid = +
+Blocks = 1
+
+Everything is Ok
+
+Folders: 9
+Files: 87
+Size:       2709077231
+Compressed: 2701388945
+Manual extraction took 3 seconds
+```
+
+花费时间3s。
+
+---
+
+### [补充] ini 文件解析
+
+一个`TestMaintenanceTool.ini`的案例如下：
+
+```ini
+[General]
+DefaultRepositories="@Variant(\0\0\0\x7f\0\0\0\x17QInstaller::Repository\0\0\0\0$aHR0cDovL2xvY2FsaG9zdDo4MDkwL3JlcG8=\x1\0\0\0\0\0\0\0\0\0\0\0\0 5pys5Zyw5rWL6K+V5LuT5bqTKE1pbnQp\0\0\0\0\0\0\0\0\0)", "@Variant(\0\0\0\x7f\0\0\0\x17QInstaller::Repository\0\0\0\0\x34\x61HR0cDovL2xvY2FsaG9zdDo4MDkwL3JlcG8vcmVwby0xLjEuMA==\x1\0\0\0\0\0\0\0\0\0\0\0\0(5pys5Zyw5rWL6K+V5LuT5bqTKE1pbnQpLTEuMS4w\0\0\0\0\0\0\0\0\0)", "@Variant(\0\0\0\x7f\0\0\0\x17QInstaller::Repository\0\0\0\0\x34\x61HR0cDovL2xvY2FsaG9zdDo4MDkxL3JlcG8vcmVwby0xLjMuMC8=\x1\x1\0\0\0\x4\x64HI=\0\0\0\bMTIzNDU2\0\0\0(5pys5Zyw5rWL6K+V5LuT5bqTKE1pbnQpLTEuMy4w\0\0\0\0\0\0\0\0\0)", "@Variant(\0\0\0\x7f\0\0\0\x17QInstaller::Repository\0\0\0\0(aHR0cDovLzE3Mi4xNi4yMC4xNTo4MDkwL3JlcG8=\x1\0\0\0\0\0\0\0\0\0\0\0\0$5bGA5Z+f572R5rWL6K+V5LuT5bqTKERFTEwp\0\0\0\0\0\0\0\0\0)", "@Variant(\0\0\0\x7f\0\0\0\x17QInstaller::Repository\0\0\0\0\x34\x61HR0cDovL2xvY2FsaG9zdDo4MDkwL3JlcG8vcmVwby0xLjIuMA==\x1\0\0\0\0\0\0\0\0\0\0\0\0(5pys5Zyw5rWL6K+V5LuT5bqTKE1pbnQpLTEuMi4w\0\0\0\0\0\0\0\0\0)", "@Variant(\0\0\0\x7f\0\0\0\x17QInstaller::Repository\0\0\0\0\x34\x61HR0cDovL2xvY2FsaG9zdDo4MDkwL3JlcG8vcmVwby0xLjAuMA==\x1\x1\0\0\0\0\0\0\0\0\0\0\0(5pys5Zyw5rWL6K+V5LuT5bqTKE1pbnQpLTEuMC4w\0\0\0\0\0\0\0\0\0)"
+FilesForDelayedDeletion=@Invalid()
+Variables=@Variant(\0\0\0\x1c\0\0\0\x1b\0\0\0\x12\0T\0\x61\0r\0g\0\x65\0t\0\x44\0i\0r\0\0\0\n\0\0\0$\0@\0R\0\x45\0L\0O\0\x43\0\x41\0T\0\x41\0\x42\0L\0\x45\0_\0P\0\x41\0T\0H\0@\0\0\0\x4\0o\0s\0\0\0\n\0\0\0\x6\0x\0\x31\0\x31\0\0\0\x1e\0R\0\x65\0m\0o\0v\0\x65\0T\0\x61\0r\0g\0\x65\0t\0\x44\0i\0r\0\0\0\n\0\0\0\b\0t\0r\0u\0\x65\0\0\0\x18\0S\0t\0\x61\0r\0t\0M\0\x65\0n\0u\0\x44\0i\0r\0\0\0\n\0\0\0\x12\0Q\0t\0I\0\x46\0W\0T\0\x65\0s\0t\0\0\0\x1e\0\x41\0p\0p\0l\0i\0\x63\0\x61\0t\0i\0o\0n\0s\0\x44\0i\0r\0\0\0\n\0\0\0\b\0/\0o\0p\0t\0\0\0\xe\0r\0o\0o\0t\0\x44\0i\0r\0\0\0\n\0\0\0\x2\0/\0\0\0\f\0\x42\0\x61\0n\0n\0\x65\0r\0\0\0\n\xff\xff\xff\xff\0\0\0\x1e\0I\0\x46\0W\0_\0V\0\x45\0R\0S\0I\0O\0N\0_\0S\0T\0R\0\0\0\n\0\0\0\n\0\x34\0.\0\x38\0.\0\x31\0\0\0&\0\x41\0p\0p\0l\0i\0\x63\0\x61\0t\0i\0o\0n\0s\0\x44\0i\0r\0U\0s\0\x65\0r\0\0\0\n\0\0\0\b\0/\0o\0p\0t\0\0\0\x1c\0P\0r\0o\0\x64\0u\0\x63\0t\0V\0\x65\0r\0s\0i\0o\0n\0\0\0\n\0\0\0\n\0\x31\0.\0\x30\0.\0\x30\0\0\0\b\0L\0o\0g\0o\0\0\0\n\xff\xff\xff\xff\0\0\0$\0\x41\0p\0p\0l\0i\0\x63\0\x61\0t\0i\0o\0n\0s\0\x44\0i\0r\0X\0\x38\0\x36\0\0\0\n\0\0\0\b\0/\0o\0p\0t\0\0\0\x36\0i\0n\0s\0t\0\x61\0l\0l\0\x65\0\x64\0O\0p\0\x65\0r\0\x61\0t\0i\0o\0n\0\x41\0r\0\x65\0S\0o\0r\0t\0\x65\0\x64\0\0\0\n\0\0\0\b\0t\0r\0u\0\x65\0\0\0\xe\0R\0o\0o\0t\0\x44\0i\0r\0\0\0\n\0\0\0\x2\0/\0\0\0\xe\0h\0o\0m\0\x65\0\x44\0i\0r\0\0\0\n\0\0\0\x16\0/\0h\0o\0m\0\x65\0/\0h\0o\0r\0\x65\0\x62\0\0\0\x1c\0P\0\x61\0g\0\x65\0L\0i\0s\0t\0P\0i\0x\0m\0\x61\0p\0\0\0\n\xff\xff\xff\xff\0\0\0\x16\0P\0r\0o\0\x64\0u\0\x63\0t\0N\0\x61\0m\0\x65\0\0\0\n\0\0\0(\0Q\0t\0I\0\x46\0W\0 \0P\0\x61\0\x63\0k\0 \0T\0\x65\0s\0t\0 \0-\0 \0T\0R\0\0\0\x12\0P\0u\0\x62\0l\0i\0s\0h\0\x65\0r\0\0\0\n\0\0\0\x6_ y]s\x99\0\0\0\x12\0W\0\x61\0t\0\x65\0r\0m\0\x61\0r\0k\0\0\0\n\0\0\0h\0:\0/\0m\0\x65\0t\0\x61\0\x64\0\x61\0t\0\x61\0/\0i\0n\0s\0t\0\x61\0l\0l\0\x65\0r\0-\0\x63\0o\0n\0\x66\0i\0g\0/\0i\0m\0\x61\0g\0\x65\0s\0_\0w\0\x61\0t\0\x65\0r\0m\0\x61\0r\0k\0_\0p\0n\0g\0.\0p\0n\0g\0\0\0\xe\0H\0o\0m\0\x65\0\x44\0i\0r\0\0\0\n\0\0\0\x16\0/\0h\0o\0m\0\x65\0/\0h\0o\0r\0\x65\0\x62\0\0\0\x6\0U\0r\0l\0\0\0\n\0\0\0$\0h\0t\0t\0p\0s\0:\0/\0/\0w\0w\0w\0.\0q\0q\0.\0\x63\0o\0m\0\0\0\x14\0U\0I\0L\0\x61\0n\0g\0u\0\x61\0g\0\x65\0\0\0\n\0\0\0\n\0z\0h\0_\0\x43\0N\0\0\0\"\0I\0n\0s\0t\0\x61\0l\0l\0\x65\0r\0\x46\0i\0l\0\x65\0P\0\x61\0t\0h\0\0\0\n\0\0\0L\0@\0R\0\x45\0L\0O\0\x43\0\x41\0T\0\x41\0\x42\0L\0\x45\0_\0P\0\x41\0T\0H\0@\0/\0T\0\x65\0s\0t\0M\0\x61\0i\0n\0t\0\x65\0n\0\x61\0n\0\x63\0\x65\0T\0o\0o\0l\0\0\0$\0\x41\0p\0p\0l\0i\0\x63\0\x61\0t\0i\0o\0n\0s\0\x44\0i\0r\0X\0\x36\0\x34\0\0\0\n\0\0\0\b\0/\0o\0p\0t\0\0\0\n\0T\0i\0t\0l\0\x65\0\0\0\n\0\0\0&\0Q\0t\0I\0\x46\0W\0 mK\x8b\xd5[\x89\x88\xc5Vh\0 \0-\0 \0T\0i\0t\0l\0\x65\0\0\0 \0I\0n\0s\0t\0\x61\0l\0l\0\x65\0r\0\x44\0i\0r\0P\0\x61\0t\0h\0\0\0\n\0\0\0$\0@\0R\0\x45\0L\0O\0\x43\0\x41\0T\0\x41\0\x42\0L\0\x45\0_\0P\0\x41\0T\0H\0@\0\0\0 \0\x46\0r\0\x61\0m\0\x65\0w\0o\0r\0k\0V\0\x65\0r\0s\0i\0o\0n\0\0\0\n\0\0\0\n\0\x34\0.\0\x38\0.\0\x31)
+```
+
+> @Variant 是 Qt 中用于序列化（存储/传输）复杂数据的一种二进制格式，主要用于 `QVariant` 类型的对象。
+
+使用`@Variant`格式存储二进制数据，混合包含Base64编码和明文配置。
 

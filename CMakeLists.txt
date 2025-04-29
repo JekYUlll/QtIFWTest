@@ -33,6 +33,8 @@ set_target_properties(app1 PROPERTIES
         INSTALL_RPATH "$ORIGIN"
 )
 
+add_subdirectory(unzip)
+
 # 安装规则
 install(TARGETS app1
         DESTINATION "${INSTALL_PREFIX}/${COMP1}/data")

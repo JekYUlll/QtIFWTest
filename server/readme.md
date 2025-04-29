@@ -1,6 +1,9 @@
 Golang文件服务器原型，测试用。  
 有`Updates.xml`以及`.7z`格式的组件提供下载。
 
+`checksum.go`中有在服务端计算sha1和MD5校验和的工具函数。  
+默认不调用，`repogen`工具已经含有在本地计算sha1校验和的功能。
+
 运行：
 ```bash
 go run .
@@ -8,9 +11,7 @@ go run .
 
 ---
 
-QtIFW使用编译出的`repogen`工具来生成仓库。  
-
-结构如下：
+`repogen`工具生成仓库结构如下：
 ```txt
 repository/
 ├── Updates.xml                 # 仓库主索引文件
@@ -22,7 +23,7 @@ repository/
 └── components.xml              # 组件清单文件(可选)
 ```
 
-实际的结构示例：
+示例：
 ```txt
 repository/
 ├── Updates.xml
@@ -44,7 +45,6 @@ repository/
 每个`[version]-meta.7z`存档包含：
 ```txt
 meta/
-├── package.xml          # 组件描述文件
 ├── installscript.qs     # 安装脚本(如有)
 ├── *.qm                 # 翻译文件(如有)
 ├── *.ui                 # 自定义界面文件(如有)
